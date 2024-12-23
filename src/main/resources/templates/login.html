@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .login-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group input {
+            border-radius: 50px;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            border-radius: 50px;
+            padding: 10px 20px;
+            width: 100%;
+            font-size: 18px;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .alert-danger {
+            border-radius: 5px;
+            font-size: 14px;
+            padding: 10px;
+            text-align: center;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-title">
+        <i class="fa fa-user-circle" aria-hidden="true"></i> 로그인
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <input type="text" id="username" name="username" class="form-control" placeholder="아이디를 입력하세요" required />
+        </div>
+
+        <div class="form-group">
+            <input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력하세요" required />
+        </div>
+
+        <div th:if="${param.error}" class="alert-danger">
+            아이디 또는 비밀번호가 잘못되었습니다.
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">로그인</button>
+        </div>
+    </form>
+
+    <div class="footer">
+        <a href="#">비밀번호를 잊으셨나요?</a> | <a href="/sign-up">회원가입</a>
+    </div>
+</div>
+
+<!-- Bootstrap JS, Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
