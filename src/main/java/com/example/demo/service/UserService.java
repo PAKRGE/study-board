@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.model.UserData;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +22,9 @@ public class UserService {
         } else {
             return false;
         }
+    }
+
+    public UserData loginUser(String userId, String password) {
+        return userRepository.loginUser(userId, password);
     }
 }

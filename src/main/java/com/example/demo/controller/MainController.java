@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.controller.request.UserIdCheckRequest;
+import com.example.demo.controller.request.UserLoginRequest;
 import com.example.demo.controller.request.UserRequest;
 import com.example.demo.controller.response.UserIdCheckResponse;
+import com.example.demo.controller.response.UserLoginResponse;
+import com.example.demo.model.UserData;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,11 +23,29 @@ public class MainController {
     public void login() {
 
     }
+    @ResponseBody
+    @PostMapping("/login")
+    public UserLoginResponse loginPost(
+            @RequestBody UserLoginRequest userLoginRequest
+    ) {
+        UserData userData = userService.loginUser(userLoginRequest.userId(),userLoginRequest.password());
+        if(userData != null) {
+            System.out.println("sdfsdfsfsfdfsfdfsfdf");
+            return UserLoginResponse.successful(userData.getUserName());
+        }
+        return UserLoginResponse.fail();
+    }
 
     @GetMapping("/sign-up")
     public String signUp() {
         return "signUp";
     }
+
+    @GetMapping("/user-board")
+    public String userBoard() {
+        return "userBoard";
+    }
+
 
     @ResponseBody
     @PostMapping("/sign-up")
