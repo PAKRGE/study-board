@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이디/비밀번호 찾기</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f0f4f8;
+      font-family: 'Arial', sans-serif;
+    }
+    .find-container {
+      max-width: 450px;
+      margin: 100px auto;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .find-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .form-group input {
+      border-radius: 50px;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    .btn-primary {
+      border-radius: 50px;
+      padding: 10px 20px;
+      width: 100%;
+      font-size: 18px;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004085;
+    }
+    .alert-danger {
+      border-radius: 5px;
+      font-size: 14px;
+      padding: 10px;
+      text-align: center;
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #555;
+    }
+    .footer a {
+      text-decoration: none;
+      color: #007bff;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="find-container">
+  <div class="find-title">
+    <i class="fa fa-search" aria-hidden="true"></i> 아이디 / 비밀번호 찾기
+  </div>
+
+  <!-- 아이디 찾기 폼 -->
+  <div id="find-id-form">
+    <h5 class="text-center">아이디 찾기</h5>
+    <form id="findIdForm">
+      <div class="form-group">
+        <label for="findIdEmail"></label><input type="email" id="findIdEmail" name="email" class="form-control" placeholder="이메일을 입력하세요" required />
+      </div>
+      <div id="userIdMessage" style="display:none;" class="alert alert-info">
+        사용자 아이디: <span id="userIdValue"></span>
+      </div>
+      <button type="button" class="btn btn-primary" id="findIdBtn">아이디 찾기</button>
+    </form>
+  </div>
+
+  <hr>
+
+  <!-- 비밀번호 찾기 폼 -->
+  <div id="find-password-form">
+    <h5 class="text-center">비밀번호 찾기</h5>
+    <form id="findPasswordForm">
+      <div class="form-group">
+        <label for="userId"></label><input type="text" id="userId" name="userId" class="form-control" placeholder="사용자 아이디" required />
+      </div>
+      <div class="form-group">
+        <label for="findPasswordUserName"></label><input type="text" id="findPasswordUserName" name="userName" class="form-control" placeholder="등록된 사용자 이름" required />
+      </div>
+      <button type="button" class="btn btn-primary" id="findPasswordBtn">비밀번호 찾기</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    <a href="#">비밀번호를 잊으셨나요?</a> | <a href="/sign-up">회원가입</a>
+  </div>
+</div>
+
+<!-- Bootstrap JS, Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<script>
+  // 아이디 찾기 버튼 클릭 시
+  document.getElementById('findIdBtn').addEventListener('click', function() {
+    const email = document.getElementById('findIdEmail').value;
+
+    // JSON 데이터 형식으로 전송
+    fetch('/find-user-id', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email }) // JSON 형식으로 데이터 전송
+    })
+      .then(response => response.json())
+      .then(data => {
+      console.log('아이디 찾기 결과:', data);
+
+      // 리다이렉트 처리
+      if (data.success && data.findUserIdData) {
+//        const encodedData = encodeURIComponent(JSON.stringify(data.findUserIdData));
+
+        // 이메일을 통해 찾은 사용자 ID를 화면에 표시
+        const userId = data.findUserIdData.userId; // 서버 응답에서 사용자 ID를 추출
+        const userIdMessage = document.getElementById('userIdMessage');
+        const userIdValue = document.getElementById('userIdValue');
+
+        // 사용자 아이디 표시
+        userIdValue.textContent = userId;  // 아이디 값을 표시
+        userIdMessage.style.display = 'block';  // 아이디 메시지 표시
+
+        // 쿼리 파라미터로 데이터 보내기
+//        window.location.href = `/find-user-id?data=${encodedData}`; // 리다이렉트와 함께 쿼리 파라미터 전송
+      } else {
+        alert('아이디 찾기 실패!');
+      }
+    })
+      .catch(error => {
+      console.error('아이디 찾기 오류:', error);
+      alert('서버와 연결 중 오류가 발생했습니다.');
+    });
+  });
+
+
+  // 비밀번호 찾기 버튼 클릭 시
+  document.getElementById('findPasswordBtn').addEventListener('click', function() {
+    const userId = document.getElementById('userId').value;
+    const userName = document.getElementById('findPasswordUserName').value;
+
+    // JSON 데이터 형식으로 전송
+    fetch('/findPassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId: userId, userName: userName }) // JSON 형식으로 데이터 전송
+    })
+      .then(response => response.json())
+      .then(data => {
+      console.log('비밀번호 찾기 결과:', data);
+      // 리다이렉트 처리
+      if (data.success) {  // 예를 들어 응답에 success 속성이 있을 경우
+        window.location.href = '/findPassword';  // 리다이렉트
+      } else {
+        alert('비밀번호 찾기 실패!');
+      }
+    })
+      .catch(error => {
+      console.error('비밀번호 찾기 오류:', error);
+      alert('서버와 연결 중 오류가 발생했습니다.');
+    });
+  });
+</script>
+
+</body>
+</html>
