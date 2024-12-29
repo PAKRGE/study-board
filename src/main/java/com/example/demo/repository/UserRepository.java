@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.FindUserIdData;
+import com.example.demo.model.FindUserPasswordData;
 import com.example.demo.model.UserData;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -53,6 +54,18 @@ public interface UserRepository {
             WHERE email = #{email}
     """)
     FindUserIdData findUserId(String email);
+
+    //find-password
+    @Select("""
+            SELECT user_name
+              , user_id
+              , email
+              , password
+            FROM users
+            WHERE user_id = #{userId}
+              AND email = #{email}
+    """)
+    FindUserPasswordData findUserPassword(String userId, String email);
 
 
 }

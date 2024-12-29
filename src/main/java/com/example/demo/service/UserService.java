@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.FindUserIdData;
+import com.example.demo.model.FindUserPasswordData;
 import com.example.demo.model.UserData;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,9 @@ public class UserService {
 
     public FindUserIdData findUserId(String email) {
         return userRepository.findUserId(email);
+    }
+
+    public FindUserPasswordData findUserPassword(String userId, String email) {
+        return userRepository.findUserPassword(userId, email);
     }
 }

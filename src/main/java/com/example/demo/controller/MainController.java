@@ -1,11 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.controller.request.*;
-import com.example.demo.controller.response.FindUserIdResponse;
-import com.example.demo.controller.response.UserEmailCheckResponse;
-import com.example.demo.controller.response.UserIdCheckResponse;
-import com.example.demo.controller.response.UserLoginResponse;
+import com.example.demo.controller.response.*;
 import com.example.demo.model.FindUserIdData;
+import com.example.demo.model.FindUserPasswordData;
 import com.example.demo.model.UserData;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -95,6 +93,18 @@ public class MainController {
             return FindUserIdResponse.successful(findUserIdData);
         }
         return FindUserIdResponse.fail();
+    }
+
+    @ResponseBody
+    @PostMapping("/find-user-password")
+    public FindUserPasswordResponse findPassword(
+            @RequestBody FindUserPasswordRequest findUserPasswordRequest
+    ) {
+        FindUserPasswordData findUserPasswordData = userService.findUserPassword(findUserPasswordRequest.userId(), findUserPasswordRequest.email());
+        if (findUserPasswordData != null) {
+            return FindUserPasswordResponse.successful(findUserPasswordData.getPassword());
+        }
+        return FindUserPasswordResponse.fail();
     }
 
 }

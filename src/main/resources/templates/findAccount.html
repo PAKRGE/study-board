@@ -55,6 +55,14 @@
       background-color: #f8d7da;
       color: #721c24;
     }
+    .alert-info {
+      border-radius: 5px;
+      font-size: 14px;
+      padding: 10px;
+      text-align: center;
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
     .footer {
       text-align: center;
       margin-top: 30px;
@@ -101,14 +109,20 @@
         <label for="userId"></label><input type="text" id="userId" name="userId" class="form-control" placeholder="사용자 아이디" required />
       </div>
       <div class="form-group">
-        <label for="findPasswordUserName"></label><input type="text" id="findPasswordUserName" name="userName" class="form-control" placeholder="등록된 사용자 이름" required />
+        <label for="findPasswordEmail"></label><input type="email" id="findPasswordEmail" name="email" class="form-control" placeholder="사용자 이메일" required />
       </div>
+
+      <!-- 비밀번호 표시 부분 -->
+      <div id="passwordMessage" style="display:none;" class="alert alert-info">
+        찾은 비밀번호: <span id="passwordValue"></span>
+      </div>
+
       <button type="button" class="btn btn-primary" id="findPasswordBtn">비밀번호 찾기</button>
     </form>
   </div>
 
   <div class="footer">
-    <a href="#">비밀번호를 잊으셨나요?</a> | <a href="/sign-up">회원가입</a>
+    <a href="/login">로그인</a> | <a href="/sign-up">회원가입</a>
   </div>
 </div>
 
@@ -133,11 +147,8 @@
       .then(data => {
       console.log('아이디 찾기 결과:', data);
 
-      // 리다이렉트 처리
+      // 아이디 찾기 성공 시
       if (data.success && data.findUserIdData) {
-//        const encodedData = encodeURIComponent(JSON.stringify(data.findUserIdData));
-
-        // 이메일을 통해 찾은 사용자 ID를 화면에 표시
         const userId = data.findUserIdData.userId; // 서버 응답에서 사용자 ID를 추출
         const userIdMessage = document.getElementById('userIdMessage');
         const userIdValue = document.getElementById('userIdValue');
@@ -145,11 +156,16 @@
         // 사용자 아이디 표시
         userIdValue.textContent = userId;  // 아이디 값을 표시
         userIdMessage.style.display = 'block';  // 아이디 메시지 표시
-
-        // 쿼리 파라미터로 데이터 보내기
-//        window.location.href = `/find-user-id?data=${encodedData}`; // 리다이렉트와 함께 쿼리 파라미터 전송
+        userIdMessage.classList.remove('alert-danger'); // 실패 메시지 클래스 제거
+        userIdMessage.classList.add('alert-info'); // 성공 메시지 클래스 추가
       } else {
-        alert('아이디 찾기 실패!');
+        // 아이디 찾기 실패 시 초기화
+        const userIdMessage = document.getElementById('userIdMessage');
+        const userIdValue = document.getElementById('userIdValue');
+        userIdValue.textContent = '해당 이메일의 아이디가 존재하지 않습니다.';  // 값 초기화
+        userIdMessage.style.display = 'block';  // 메시지 숨기기
+        userIdMessage.classList.remove('alert-info'); // 성공 메시지 클래스 제거
+        userIdMessage.classList.add('alert-danger'); // 실패 메시지 클래스 추가
       }
     })
       .catch(error => {
@@ -158,28 +174,41 @@
     });
   });
 
-
   // 비밀번호 찾기 버튼 클릭 시
   document.getElementById('findPasswordBtn').addEventListener('click', function() {
     const userId = document.getElementById('userId').value;
-    const userName = document.getElementById('findPasswordUserName').value;
+    const email = document.getElementById('findPasswordEmail').value;
 
     // JSON 데이터 형식으로 전송
-    fetch('/findPassword', {
+    fetch('/find-user-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId: userId, userName: userName }) // JSON 형식으로 데이터 전송
+      body: JSON.stringify({ userId: userId, email: email }) // JSON 형식으로 데이터 전송
     })
       .then(response => response.json())
       .then(data => {
       console.log('비밀번호 찾기 결과:', data);
-      // 리다이렉트 처리
-      if (data.success) {  // 예를 들어 응답에 success 속성이 있을 경우
-        window.location.href = '/findPassword';  // 리다이렉트
+
+      // 비밀번호 찾기 성공 시
+      if (data.success && data.password) {
+        const passwordMessage = document.getElementById('passwordMessage');
+        const passwordValue = document.getElementById('passwordValue');
+
+        // 비밀번호를 화면에 표시
+        passwordValue.textContent = data.password;  // 비밀번호 값을 표시
+        passwordMessage.style.display = 'block';  // 비밀번호 메시지 표시
+        passwordMessage.classList.remove('alert-danger'); // 실패 메시지 클래스 제거
+        passwordMessage.classList.add('alert-info'); // 성공 메시지 클래스 추가
       } else {
-        alert('비밀번호 찾기 실패!');
+        // 비밀번호 찾기 실패 시 초기화
+        const passwordMessage = document.getElementById('passwordMessage');
+        const passwordValue = document.getElementById('passwordValue');
+        passwordValue.textContent = '일치하는 비밀번호가 존재하지 않습니다.';  // 값 초기화
+        passwordMessage.style.display = 'block';  // 메시지 숨기기
+        passwordMessage.classList.remove('alert-info'); // 성공 메시지 클래스 제거
+        passwordMessage.classList.add('alert-danger'); // 실패 메시지 클래스 추가
       }
     })
       .catch(error => {
