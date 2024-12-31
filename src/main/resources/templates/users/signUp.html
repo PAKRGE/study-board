@@ -133,7 +133,7 @@
   </form>
 
   <div class="footer">
-    이미 계정이 있나요? <a href="/login">로그인</a>
+    이미 계정이 있나요? <a href="/users/login">로그인</a>
   </div>
 </div>
 
@@ -174,7 +174,7 @@
     };
 
     // Fetch API를 사용하여 데이터를 JSON으로 전송
-    fetch('/sign-up', {
+    fetch('/users/sign-up', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -183,7 +183,7 @@
     })
       .then(data => {
       document.getElementById('successMessage').style.display = 'block';  // 성공 메시지 표시
-      setTimeout(() => window.location.href = '/login', 3000);  // 로그인 페이지로 리다이렉트
+      setTimeout(() => window.location.href = '/users/login', 3000);  // 로그인 페이지로 리다이렉트
     })
       .catch(error => {
       document.getElementById('errorMessage').style.display = 'block';  // 오류 메시지 표시
@@ -223,7 +223,7 @@
     // 이메일 체크 서버로 요청 보내기
     var formData = { email: email };
 
-    fetch('/check-email', {
+    fetch('/users/check-email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -268,7 +268,7 @@
     // 아이디 체크 서버로 요청 보내기
     var formData = { userId: userId };
 
-    fetch('/user-id-check', {
+    fetch('/users/user-id-check', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

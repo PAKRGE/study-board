@@ -122,7 +122,7 @@
   </div>
 
   <div class="footer">
-    <a href="/login">로그인</a> | <a href="/sign-up">회원가입</a>
+    <a href="/users/login">로그인</a> | <a href="/users/sign-up">회원가입</a>
   </div>
 </div>
 
@@ -136,7 +136,7 @@
     const email = document.getElementById('findIdEmail').value;
 
     // JSON 데이터 형식으로 전송
-    fetch('/find-user-id', {
+    fetch('/users/find-user-id', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -180,7 +180,7 @@
     const email = document.getElementById('findPasswordEmail').value;
 
     // JSON 데이터 형식으로 전송
-    fetch('/find-user-password', {
+    fetch('/users/find-user-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

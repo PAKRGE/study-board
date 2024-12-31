@@ -89,7 +89,7 @@
     </div>
 
     <div class="footer">
-        <a href="/find-account">비밀번호를 잊으셨나요?</a> | <a href="/sign-up">회원가입</a>
+        <a href="/users/find-account">비밀번호를 잊으셨나요?</a> | <a href="/users/sign-up">회원가입</a>
     </div>
 </div>
 
@@ -104,7 +104,7 @@
         const password = document.getElementById('password').value;
 
         // 로그인 요청을 보낼 URL
-        const url = '/login';  // 이 URL을 실제 로그인 처리 URL로 변경
+        const url = '/users/login';  // 이 URL을 실제 로그인 처리 URL로 변경
 
         // 요청 보낼 데이터
         const data = {
@@ -125,7 +125,7 @@
             console.log(data);
             if (data.success) {
                 // 로그인 성공 시 리디렉션
-                window.location.href = '/user-board'; // 대시보드 페이지로 리디렉션
+                window.location.href = '/board'; // 대시보드 페이지로 리디렉션
             } else {
                 // 로그인 실패 시 에러 메시지 표시
                 document.getElementById('error-message').style.display = 'block';

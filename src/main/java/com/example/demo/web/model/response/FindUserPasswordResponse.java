@@ -1,4 +1,4 @@
-package com.example.demo.controller.response;
+package com.example.demo.web.model.response;
 
 public record FindUserPasswordResponse(
         boolean success,

@@ -1,4 +1,4 @@
-package com.example.demo.controller.response;
+package com.example.demo.web.model.response;
 
 import com.example.demo.model.FindUserIdData;
 
