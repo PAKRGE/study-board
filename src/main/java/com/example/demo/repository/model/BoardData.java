@@ -7,15 +7,17 @@ public record BoardData(
         String userId,
         String boardContents,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        String boardTitle
 ) {
-    public BoardData updateContent(String contents) {
+    public BoardData updateContent(String contents, String title) {
         return new BoardData(
                 id,
                 userId,
                 contents,
                 createdAt,
-                updatedAt
+                updatedAt,
+                title
         );
     }
 }
