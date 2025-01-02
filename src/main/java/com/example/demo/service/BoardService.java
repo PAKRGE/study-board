@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.repository.BoardRepository;
+import com.example.demo.repository.model.BoardData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,5 +21,9 @@ public class BoardService {
             System.out.println("exception : " + e);
             return false;
         }
+    }
+
+    public List<BoardData> boardList() {
+        return boardRepository.boardList();
     }
 }
