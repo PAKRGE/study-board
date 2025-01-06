@@ -23,7 +23,11 @@ public class BoardService {
         }
     }
 
-    public List<BoardData> boardList() {
-        return boardRepository.boardList();
+    public List<BoardData> boardList(int minPage, int maxPage) {
+        return boardRepository.boardList(minPage, maxPage);
+    }
+
+    public int countBoard() {
+        return boardRepository.countBoard();
     }
 }

@@ -84,28 +84,29 @@
         }
         .footer a {
             text-decoration: none;
-            color: #007bff;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* 스타일 개선 */
-        .board-item .content {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* 게시글 목록 제목 */
-        .board-list h5 {
+            color: white;
+            padding: 12px 30px;
             font-size: 1.25rem;
-            font-weight: bold;
-            color: #333;
-            margin-top: 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
         }
 
-        /* 페이징 버튼 스타일 */
+        .footer a:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .footer a:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .footer i {
+            margin-right: 8px;
+        }
+
         .pagination {
             justify-content: center;
         }
@@ -130,8 +131,11 @@
         </ul>
     </nav>
 
+    <!-- 게시글 작성 버튼 -->
     <div class="footer">
-        <a href="/boards/write-contents">게시글 작성</a>
+        <a href="/boards/write-contents" class="btn btn-primary btn-lg" id="write-btn">
+            <i class="fa fa-pencil-square" aria-hidden="true"></i> 게시글 작성
+        </a>
     </div>
 </div>
 
@@ -141,8 +145,8 @@
 
 <script>
     let currentPage = 1; // 현재 페이지
-    const postsPerPage = 4; // 페이지당 게시글 개수
     let totalPages = 1; // 총 페이지 수 (서버에서 받아옴)
+    const postsPerPage = 4; // 한 페이지당 게시글 수
 
     // 날짜를 'YYYY-MM-DD HH:mm' 형식으로 포맷팅하는 함수
     function formatDate(dateString) {
@@ -165,7 +169,6 @@
             },
             body: JSON.stringify({
                 page: page,
-                size: postsPerPage
             })
         })
             .then(response => response.json()) // JSON 응답을 처리
@@ -179,13 +182,13 @@
                     const postElement = document.createElement('div');
                     postElement.classList.add('board-item');
                     postElement.innerHTML = `
-                        <div class="header">
-                            <div class="title">${boardData.boardTitle}</div>
-                            <div class="user-info">작성자: ${boardData.userId}</div>
-                        </div>
-                        <div class="content">${boardData.boardTitle}</div>
-                        <div class="date">작성일: ${formatDate(boardData.createdAt)}</div>
-                    `;
+                            <div class="header">
+                                <div class="title">${boardData.boardTitle}</div>
+                                <div class="user-info">작성자: ${boardData.userId}</div>
+                            </div>
+                            <div class="content">${boardData.boardTitle}</div>
+                            <div class="date">작성일: ${formatDate(boardData.createdAt)}</div>
+                        `;
                     boardListContainer.appendChild(postElement);
                 });
 
@@ -195,6 +198,28 @@
         })
             .catch(error => {
             console.error('게시판 데이터를 불러오는 데 오류가 발생했습니다:', error);
+        });
+    }
+
+    // 총 게시글 수를 가져오는 함수
+    function loadTotalBoardCount() {
+        fetch('/boards/count-board', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+            if (data.success) {
+                const totalPosts = data.countBoard; // 총 게시글 수
+                totalPages = Math.ceil(totalPosts / postsPerPage); // 총 페이지 수 계산
+                console.log("totalPages : " + totalPages);
+                loadBoardList(currentPage); // 첫 페이지 로드
+            }
+        })
+            .catch(error => {
+            console.error('게시글 수를 불러오는 데 오류가 발생했습니다:', error);
         });
     }
 
@@ -236,8 +261,8 @@
         loadBoardList(page);
     }
 
-    // 페이지 로드 시 게시판 목록을 불러옴
-    document.addEventListener('DOMContentLoaded', () => loadBoardList(currentPage));
+    // 페이지 로드 시 게시판 목록과 총 게시글 수를 불러옴
+    document.addEventListener('DOMContentLoaded', loadTotalBoardCount);
 </script>
 
 </body>
