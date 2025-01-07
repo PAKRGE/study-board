@@ -121,13 +121,36 @@
 
     <!-- 게시판 목록 -->
     <div class="board-list" id="board-list">
-        <!-- 게시글 목록이 여기에 동적으로 렌더링됩니다 -->
+        <!-- Thymeleaf로 게시글 목록 동적으로 출력 -->
+        <div th:each="board : ${board.list}" class="board-item">
+            <div class="header">
+                <div class="title" th:text="${board.boardTitle}">게시글 제목</div>
+                <div class="user-info" th:text="'작성자: ' + ${board.userId}">작성자</div>
+            </div>
+            <div class="content" th:text="${board.boardTitle}">게시글 내용</div>
+            <div class="date" th:text="'작성일: ' + ${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</div>
+        </div>
     </div>
 
     <!-- 페이징 버튼 -->
     <nav>
         <ul class="pagination" id="pagination">
-            <!-- 페이지 버튼이 여기에 동적으로 렌더링됩니다 -->
+            <!-- 이전 페이지 버튼 -->
+            <li class="page-item" th:classappend="${board.currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/boards/board-list(page=${board.currentPage - 1})}">이전</a>
+            </li>
+
+            <!-- 페이지 번호 버튼들 -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, board.totalPage)}" th:classappend="${i == board.currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/boards/board-list(page=${i})}" th:text="${i}"></a>
+            </li>
+
+            <!-- 다음 페이지 버튼 -->
+            <li class="page-item" th:classappend="${board.currentPage == board.totalPage} ? 'disabled'">
+                <a class="page-link" th:href="@{/boards/board-list(page=${board.currentPage + 1})}">다음</a>
+            </li>
+
+
         </ul>
     </nav>
 
@@ -142,128 +165,6 @@
 <!-- Bootstrap JS, Popper.js -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
-<script>
-    let currentPage = 1; // 현재 페이지
-    let totalPages = 1; // 총 페이지 수 (서버에서 받아옴)
-    const postsPerPage = 4; // 한 페이지당 게시글 수
-
-    // 날짜를 'YYYY-MM-DD HH:mm' 형식으로 포맷팅하는 함수
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
-    }
-
-    // 게시판 목록을 가져오는 함수 (페이지 처리)
-    function loadBoardList(page) {
-        fetch('/boards/board-list', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                page: page,
-            })
-        })
-            .then(response => response.json()) // JSON 응답을 처리
-            .then(data => {
-            if (data.success) {
-                const boardListContainer = document.getElementById('board-list');
-                boardListContainer.innerHTML = ''; // 기존 내용 지우기
-
-                // 데이터를 받아와서 화면에 출력
-                data.boardDataList.forEach(boardData => {
-                    const postElement = document.createElement('div');
-                    postElement.classList.add('board-item');
-                    postElement.innerHTML = `
-                            <div class="header">
-                                <div class="title">${boardData.boardTitle}</div>
-                                <div class="user-info">작성자: ${boardData.userId}</div>
-                            </div>
-                            <div class="content">${boardData.boardTitle}</div>
-                            <div class="date">작성일: ${formatDate(boardData.createdAt)}</div>
-                        `;
-                    boardListContainer.appendChild(postElement);
-                });
-
-                totalPages = data.totalPages; // 서버에서 총 페이지 수 받기
-                updatePagination(totalPages, page); // 페이지네이션 버튼 업데이트
-            }
-        })
-            .catch(error => {
-            console.error('게시판 데이터를 불러오는 데 오류가 발생했습니다:', error);
-        });
-    }
-
-    // 총 게시글 수를 가져오는 함수
-    function loadTotalBoardCount() {
-        fetch('/boards/count-board', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-            if (data.success) {
-                const totalPosts = data.countBoard; // 총 게시글 수
-                totalPages = Math.ceil(totalPosts / postsPerPage); // 총 페이지 수 계산
-                console.log("totalPages : " + totalPages);
-                loadBoardList(currentPage); // 첫 페이지 로드
-            }
-        })
-            .catch(error => {
-            console.error('게시글 수를 불러오는 데 오류가 발생했습니다:', error);
-        });
-    }
-
-    // 페이지네이션 버튼 업데이트
-    function updatePagination(totalPages, currentPage) {
-        const paginationContainer = document.getElementById('pagination');
-        paginationContainer.innerHTML = '';
-
-        // 이전 페이지 버튼
-        const prevButton = document.createElement('li');
-        prevButton.classList.add('page-item');
-        prevButton.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">이전</a>`;
-        if (currentPage === 1) prevButton.classList.add('disabled');
-        paginationContainer.appendChild(prevButton);
-
-        // 페이지 번호 버튼들
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('li');
-            pageButton.classList.add('page-item');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
-            }
-            pageButton.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>`;
-            paginationContainer.appendChild(pageButton);
-        }
-
-        // 다음 페이지 버튼
-        const nextButton = document.createElement('li');
-        nextButton.classList.add('page-item');
-        nextButton.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage + 1})">다음</a>`;
-        if (currentPage === totalPages) nextButton.classList.add('disabled');
-        paginationContainer.appendChild(nextButton);
-    }
-
-    // 페이지 이동 함수
-    function goToPage(page) {
-        if (page < 1 || page > totalPages) return;
-        currentPage = page;
-        loadBoardList(page);
-    }
-
-    // 페이지 로드 시 게시판 목록과 총 게시글 수를 불러옴
-    document.addEventListener('DOMContentLoaded', loadTotalBoardCount);
-</script>
 
 </body>
 </html>
