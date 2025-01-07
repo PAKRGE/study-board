@@ -10,14 +10,26 @@ public record BoardData(
         LocalDateTime updatedAt,
         String boardTitle
 ) {
-    public BoardData updateContent(String contents, String title) {
+    public BoardData updateBoardData(String contents, String title) {
         return new BoardData(
                 id,
                 userId,
                 contents,
                 createdAt,
-                updatedAt,
+                LocalDateTime.now(),
                 title
         );
+    }
+
+    @Override
+    public String toString() {
+        return "BoardData{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", boardContents='" + boardContents + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", boardTitle='" + boardTitle + '\'' +
+                '}';
     }
 }

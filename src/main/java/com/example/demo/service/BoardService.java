@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.Page;
 import com.example.demo.repository.BoardRepository;
 import com.example.demo.repository.model.BoardData;
+import com.example.demo.service.exception.IdNotFoundException;
 import com.example.demo.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +44,23 @@ public class BoardService {
     }
 
     public int deleteBoard(int id) {
-        try{
+        try {
             return boardRepository.deleteBoard(id);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw e;
+        }
+    }
+
+    public BoardData selectBoard(int id) {
+        return boardRepository.selectBoard(id);
+    }
+
+    public void updateBoard(String title, String content, int id) {
+        try {
+            boardRepository.updateBoard(title, content, id);
+        } catch (Exception e) {
+            throw new IdNotFoundException(e.getMessage());
         }
     }
 }

@@ -1,10 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.repository.model.BoardData;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -36,5 +33,21 @@ public interface BoardRepository {
             WHERE id = #{id}
     """)
     int deleteBoard(int id);
+
+    @Select("""
+            SELECT *
+            FROM BOARD
+            WHERE ID = #{id}
+    """)
+    BoardData selectBoard(int id);
+
+    @Update("""
+            UPDATE BOARD
+            SET board_title = #{title},
+                board_contents = #{content},
+                updatedAt = CURRENT_TIMESTAMP
+            WHERE id = #{id}
+    """)
+    void updateBoard(String title, String content, int id);
 
 }

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -39,6 +40,17 @@ public class BoardController {
     @GetMapping("/write-contents")
     public String writeContents() {
         return "boards/writeContents";
+    }
+
+    @GetMapping("/board-update")
+    public String boardUpdate(
+            @RequestParam(value = "id") int id,
+            Model model
+    ) {
+        BoardData board = boardService.selectBoard(id);
+        log.info(board.toString());
+        model.addAttribute("board", board);
+        return "boards/updateBoard";
     }
 
 }

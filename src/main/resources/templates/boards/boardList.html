@@ -165,7 +165,7 @@
                 <div class="title" th:text="${board.boardTitle}">게시글 제목</div>
                 <div class="user-info" th:text="'작성자: ' + ${board.userId}">작성자</div>
             </div>
-            <div class="content" th:text="${board.boardTitle}">게시글 내용</div>
+            <div class="content" th:text="${board.boardContents}">게시글 내용</div>
             <div class="date" th:text="'작성일: ' + ${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</div>
 
             <!-- 수정 및 삭제 버튼을 오른쪽에 배치 -->
