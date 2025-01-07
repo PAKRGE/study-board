@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.repository.model.BoardData;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -28,5 +29,12 @@ public interface BoardRepository {
             FROM BOARD
     """)
     int countBoard();
+
+    @Delete("""
+            DELETE
+            FROM BOARD
+            WHERE id = #{id}
+    """)
+    int deleteBoard(int id);
 
 }

@@ -4,13 +4,14 @@ import com.example.demo.model.Page;
 import com.example.demo.repository.BoardRepository;
 import com.example.demo.repository.model.BoardData;
 import com.example.demo.service.exception.UserNotFoundException;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -40,15 +41,13 @@ public class BoardService {
     public int countBoard() {
         return boardRepository.countBoard();
     }
-}
 
-class Person {
-    private final String name;
-    private final int age;
-
-    @Builder
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public int deleteBoard(int id) {
+        try{
+            return boardRepository.deleteBoard(id);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 }

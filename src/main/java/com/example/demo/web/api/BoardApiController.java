@@ -1,19 +1,16 @@
 package com.example.demo.web.api;
 
-import com.example.demo.repository.model.BoardData;
 import com.example.demo.service.BoardService;
-import com.example.demo.web.model.request.BoardListRequest;
+import com.example.demo.web.model.request.BoardDeleteRequest;
 import com.example.demo.web.model.request.WriteContentsRequest;
-import com.example.demo.web.model.response.BoardListResponse;
 import com.example.demo.web.model.response.CountBoardResponse;
+import com.example.demo.web.model.response.BoardDeleteResponse;
 import com.example.demo.web.model.response.WriteContentsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,24 +27,6 @@ public class BoardApiController {
 
     }
 
-    @PostMapping("/board-list")
-    public BoardListResponse boardList(
-                @RequestBody BoardListRequest boardListRequest
-    ) {
-        int minPage = 0;
-        int maxPage = 0;
-        if(boardListRequest.page() != 0) {
-            minPage = (boardListRequest.page() - 1) * 4;
-            maxPage = 4;
-        }
-
-        List<BoardData> boardDataList = boardService.boardList(minPage, maxPage);
-        if (boardDataList != null) {
-            return BoardListResponse.successful(boardDataList);
-        }
-        return BoardListResponse.fail();
-    }
-
     @PostMapping("/count-board")
     public CountBoardResponse countBoard() {
         int countBoard = boardService.countBoard();
@@ -55,5 +34,15 @@ public class BoardApiController {
             return CountBoardResponse.successful(countBoard);
         }
         return CountBoardResponse.fail();
+    }
+
+    @PostMapping("/board-delete")
+    public BoardDeleteResponse boardDelete(
+            @RequestBody BoardDeleteRequest boardDeleteRequest
+    ) {
+        if (boardService.deleteBoard(boardDeleteRequest.boardId()) != 0) {
+            return BoardDeleteResponse.successful();
+        }
+        return BoardDeleteResponse.fail();
     }
 }
