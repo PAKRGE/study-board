@@ -36,9 +36,7 @@ public interface UserRepository {
 
     //login
     @Select("""
-            SELECT user_id
-                 , user_name
-                 , password
+            SELECT *
             FROM users
             WHERE user_id = #{userId}
               AND password = #{password}

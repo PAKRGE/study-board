@@ -6,9 +6,12 @@ import com.example.demo.model.UserData;
 import com.example.demo.service.UserService;
 import com.example.demo.web.model.request.*;
 import com.example.demo.web.model.response.*;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -17,17 +20,19 @@ public class UserApiController {
 
     @PostMapping("/login")
     public UserLoginResponse loginPost(
+            HttpSession session,
             @RequestBody UserLoginRequest userLoginRequest
     ) {
         UserData userData = userService.loginUser(userLoginRequest.userId(), userLoginRequest.password());
         if (userData != null) {
+            session.setAttribute("userData", userData);
             return UserLoginResponse.successful(userData.getUserName());
         }
         return UserLoginResponse.fail();
     }
 
     @PostMapping("/find-user-id")
-    public FindUserIdResponse findID(
+    public FindUserIdResponse findId(
             @RequestBody FindUserIdRequest findUserIdRequest
     ) {
         FindUserIdData findUserIdData = userService.findUserId(findUserIdRequest.email());
