@@ -24,7 +24,10 @@ public class SessionFilter extends HttpFilter {
     }
 
     private boolean invalidSession(HttpSession session) {
-        return session == null;
+        if((session == null) || session.getAttribute("userData") == null) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isNotWhiteList(HttpServletRequest request) {

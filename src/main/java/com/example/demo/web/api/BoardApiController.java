@@ -1,5 +1,6 @@
 package com.example.demo.web.api;
 
+import com.example.demo.model.UserData;
 import com.example.demo.service.BoardService;
 import com.example.demo.web.model.request.BoardDeleteRequest;
 import com.example.demo.web.model.request.BoardUpdateRequest;
@@ -10,6 +11,7 @@ import com.example.demo.web.model.response.CountBoardResponse;
 import com.example.demo.web.model.response.WriteContentsResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +28,11 @@ public class BoardApiController {
 
     @PostMapping("/write-contents")
     public WriteContentsResponse writeContents(
+            HttpServletRequest request,
             @RequestBody WriteContentsRequest writeContentsRequest
     ) {
-        boardService.writeContents(writeContentsRequest.userId(), writeContentsRequest.boardContents(), writeContentsRequest.boardTitle());
+        UserData userData = (UserData) request.getSession().getAttribute("userData");
+        boardService.writeContents(userData.getUserId(), writeContentsRequest.boardContents(), writeContentsRequest.boardTitle());
         return WriteContentsResponse.successful();
 
     }
