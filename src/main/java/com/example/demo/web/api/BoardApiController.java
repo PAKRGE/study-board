@@ -10,8 +10,6 @@ import com.example.demo.web.model.response.BoardUpdateResponse;
 import com.example.demo.web.model.response.CountBoardResponse;
 import com.example.demo.web.model.response.WriteContentsResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

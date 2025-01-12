@@ -17,9 +17,10 @@ public interface BoardRepository {
     @Select("""
             SELECT *
             FROM BOARD
-            LIMIT #{maxPage} OFFSET #{minPage}
+            ORDER BY ID DESC
+            LIMIT #{limit} OFFSET #{offset}
     """)
-    List<BoardData> boardList(int minPage, int maxPage);
+    List<BoardData> boardList(int offset, int limit);
 
     @Select("""
             SELECT COUNT(*)
