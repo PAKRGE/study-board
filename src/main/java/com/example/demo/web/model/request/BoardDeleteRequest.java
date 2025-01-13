@@ -1,6 +1,7 @@
 package com.example.demo.web.model.request;
 
 public record BoardDeleteRequest(
-        int boardId
+        int boardId,
+        String userId
 ) {
 }

@@ -1,8 +1,10 @@
 package com.example.demo.web.view;
 
 import com.example.demo.model.Page;
+import com.example.demo.model.UserData;
 import com.example.demo.repository.model.BoardData;
 import com.example.demo.service.BoardService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -44,12 +46,22 @@ public class BoardController {
     @GetMapping("/board-update")
     public String boardUpdate(
             @RequestParam(value = "id") int id,
+            @RequestParam(value = "userId") String userId,
+            HttpServletRequest request,
             Model model
     ) {
+        UserData userData = (UserData) request.getSession().getAttribute("userData");
+        if(inavalidUserId(userId, userData)) {
+            return "users/login";
+        }
         BoardData board = boardService.selectBoard(id);
         log.info(board.toString());
         model.addAttribute("board", board);
         return "boards/updateBoard";
+    }
+
+    private static boolean inavalidUserId(String userId, UserData userData) {
+        return userData.getUserId().equals(userId);
     }
 
 }

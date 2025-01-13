@@ -46,12 +46,19 @@ public class BoardApiController {
 
     @PostMapping("/board-delete")
     public BoardDeleteResponse boardDelete(
+            HttpServletRequest request,
             @RequestBody BoardDeleteRequest boardDeleteRequest
     ) {
-        if (boardService.deleteBoard(boardDeleteRequest.boardId()) != 0) {
+        UserData userData = (UserData) request.getSession().getAttribute("userData");
+        if (incorrectUserId(boardDeleteRequest, userData)) {
+            boardService.deleteBoard(boardDeleteRequest.boardId());
             return BoardDeleteResponse.successful();
         }
         return BoardDeleteResponse.fail();
+    }
+
+    private static boolean incorrectUserId(BoardDeleteRequest boardDeleteRequest, UserData userData) {
+        return userData.getUserId().equals(boardDeleteRequest.userId());
     }
 
     @PostMapping("/board-update")
